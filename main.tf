@@ -3,8 +3,9 @@ provider "aws" {
 }
 
 locals {
-  name   = "gitea-postgresql"
-  region = "eu-west-2"
+  name     = "gitea-postgresql"
+  region   = "eu-west-2"
+  identity = "gitea-test"
   tags = {
     Owner       = "NickB"
     Environment = "dev"
@@ -17,13 +18,13 @@ resource "aws_db_instance" "gitea-test" {
   # db_subnet_group_name = aws_default_vpc.default_vpc.id
   engine                 = "postgres"
   engine_version         = "12.5"
-  identifier             = "gitea-test"
+  identifier             = local.identity
   snapshot_identifier    = var.snapshot
   instance_class         = "db.t2.micro"
   skip_final_snapshot    = true
   storage_encrypted      = false
-  username               = "gitea"
-  password               = var.msuserpass
+  username               = var.db_username
+  password               = var.db_password
   vpc_security_group_ids = [aws_security_group.db_security_group.id]
 }
 
